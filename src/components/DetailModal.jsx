@@ -1,4 +1,7 @@
-import { CalendarDays, X } from 'lucide-react'
+import { CalendarDays, Download, ExternalLink, FileText, X } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
+
+const emptyDocuments = []
 
 const statusClass = {
   Menunggu: 'status-pending',
@@ -12,6 +15,18 @@ function formatDate(dateString) {
 }
 
 function DetailModal({ registration, onClose, onUpdateStatus }) {
+  const uploadedDocuments = registration.documents || emptyDocuments
+  const documentsWithUrls = useMemo(() => uploadedDocuments.map((uploadedDocument) => ({
+    ...uploadedDocument,
+    url: uploadedDocument.file ? URL.createObjectURL(uploadedDocument.file) : null,
+  })), [uploadedDocuments])
+
+  useEffect(() => () => {
+    documentsWithUrls.forEach(({ url }) => {
+      if (url) URL.revokeObjectURL(url)
+    })
+  }, [documentsWithUrls])
+
   const details = [
     ['NIK', registration.nik],
     ['Jenis kelamin', registration.gender],
@@ -40,6 +55,29 @@ function DetailModal({ registration, onClose, onUpdateStatus }) {
         </div>
         <div className="modal-trip"><CalendarDays size={16} /><span>Keberangkatan <strong>{formatDate(registration.departureDate)}</strong></span><i>·</i><span>Terdaftar <strong>{formatDate(registration.registeredAt)}</strong></span></div>
         <div className="detail-grid">{details.map(([label, value]) => <div className="detail-item" key={label}><span>{label}</span><strong>{value || '—'}</strong></div>)}</div>
+        <section className="modal-documents" aria-labelledby="modal-documents-title">
+          <div className="modal-documents-heading">
+            <div><h3 id="modal-documents-title">Dokumen terunggah</h3><span>{uploadedDocuments.length} file</span></div>
+          </div>
+          {documentsWithUrls.length > 0 ? (
+            <ul className="modal-document-list">
+              {documentsWithUrls.map((uploadedDocument) => (
+                <li key={uploadedDocument.id}>
+                  <span className="modal-document-icon"><FileText size={17} /></span>
+                  <span className="modal-document-name"><strong>{uploadedDocument.name}</strong><small>{uploadedDocument.type || 'File dokumen'}</small></span>
+                  <span className="modal-document-actions">
+                    {uploadedDocument.url && (
+                      <>
+                        <a href={uploadedDocument.url} target="_blank" rel="noreferrer" aria-label={`Lihat ${uploadedDocument.name}`}><ExternalLink size={16} /></a>
+                        <a href={uploadedDocument.url} download={uploadedDocument.name} aria-label={`Unduh ${uploadedDocument.name}`}><Download size={16} /></a>
+                      </>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="modal-documents-empty">Belum ada dokumen yang diunggah saat pendaftaran.</p>}
+        </section>
         <div className="modal-footer"><span>Data pendaftaran tersimpan di sistem.</span><button type="button" className="button button-primary" onClick={onClose}>Selesai</button></div>
       </section>
     </div>

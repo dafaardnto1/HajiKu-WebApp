@@ -1,10 +1,20 @@
-import { ArrowLeft, ArrowRight, Check, ClipboardList, UserRound } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, ClipboardList, FileText, Upload, UserRound, X } from 'lucide-react'
 import { useState } from 'react'
 
 const now = new Date()
 const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+const maxFileSize = 10 * 1024 * 1024
+const allowedExtensions = new Set(['pdf', 'jpg', 'jpeg', 'png', 'webp'])
+
+function formatFileSize(size) {
+  return size < 1024 * 1024
+    ? `${Math.max(1, Math.round(size / 1024))} KB`
+    : `${(size / (1024 * 1024)).toFixed(1)} MB`
+}
 
 function RegistrationForm({ packages, onSubmit, onCancel }) {
+  const [uploadedFiles, setUploadedFiles] = useState([])
+  const [uploadError, setUploadError] = useState('')
   const [form, setForm] = useState({
     fullName: '',
     nik: '',
@@ -29,10 +39,35 @@ function RegistrationForm({ packages, onSubmit, onCancel }) {
     setForm((current) => ({ ...current, [name]: value }))
   }
 
+  function handleFileChange(event) {
+    const selectedFiles = Array.from(event.currentTarget.files || [])
+    event.currentTarget.value = ''
+
+    const acceptedFiles = selectedFiles.filter((file) => {
+      const extension = file.name.split('.').pop()?.toLowerCase()
+      return file.size <= maxFileSize && allowedExtensions.has(extension)
+    })
+
+    setUploadedFiles((current) => [
+      ...current,
+      ...acceptedFiles.map((file) => ({
+        id: crypto.randomUUID(),
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        file,
+      })),
+    ])
+    setUploadError(acceptedFiles.length === selectedFiles.length
+      ? ''
+      : 'Gunakan file PDF, JPG, PNG, atau WEBP dengan ukuran maksimal 10 MB per file.')
+  }
+
   function handleSubmit(event) {
     event.preventDefault()
     onSubmit({
       ...form,
+      documents: uploadedFiles,
       id: `UMR-${Date.now()}`,
       status: 'Menunggu',
       registeredAt: today,
@@ -130,6 +165,39 @@ function RegistrationForm({ packages, onSubmit, onCancel }) {
             </label>
           </div>
         </div>
+
+        <div className="form-section">
+          <div className="section-title">
+            <span className="section-icon"><FileText size={18} /></span>
+            <div><h2>Dokumen jamaah</h2><p>Unggah dokumen identitas atau perjalanan yang tersedia.</p></div>
+            <span className="optional-label">Opsional</span>
+          </div>
+          <label className="document-upload-zone">
+            <input
+              className="document-upload-input"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.webp"
+              multiple
+              onChange={handleFileChange}
+              aria-label="Pilih dokumen jamaah"
+            />
+            <span className="upload-icon"><Upload size={17} /></span>
+            <span className="upload-copy"><strong>Pilih file untuk diunggah</strong><small>PDF, JPG, PNG, atau WEBP · Maks. 10 MB per file</small></span>
+          </label>
+          {uploadError && <p className="document-upload-error" role="alert">{uploadError}</p>}
+          {uploadedFiles.length > 0 && (
+            <ul className="registration-file-list">
+              {uploadedFiles.map((uploadedFile) => (
+                <li key={uploadedFile.id}>
+                  <FileText size={16} />
+                  <span><strong>{uploadedFile.name}</strong><small>{formatFileSize(uploadedFile.size)}</small></span>
+                  <button type="button" aria-label={`Hapus ${uploadedFile.name}`} onClick={() => setUploadedFiles((current) => current.filter((item) => item.id !== uploadedFile.id))}><X size={16} /></button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="form-footer">
           <p><span className="privacy-dot">✓</span> Data Anda dijaga kerahasiaannya dan hanya digunakan untuk keperluan perjalanan.</p>
           <div className="form-actions">

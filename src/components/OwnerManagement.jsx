@@ -93,6 +93,7 @@ function OwnerManagement({
   onUpdatePayment,
   documents,
   onUpdateDocument,
+  onViewDetails,
 }) {
   const [addingPackage, setAddingPackage] = useState(false)
   const [search, setSearch] = useState('')
@@ -249,7 +250,7 @@ function OwnerManagement({
             </div>
             <div className="management-table-wrap">
               <table className="management-table">
-                <thead><tr><th>JAMAAH</th><th>PAKET</th><th>NIK</th><th>NOMOR PASPOR</th><th>STATUS PEMERIKSAAN</th></tr></thead>
+                <thead><tr><th>JAMAAH</th><th>PAKET</th><th>NIK</th><th>NOMOR PASPOR</th><th>BERKAS UPLOAD</th><th>STATUS PEMERIKSAAN</th></tr></thead>
                 <tbody>
                   {filteredRegistrations.map((registration) => (
                     <tr key={registration.id}>
@@ -257,10 +258,13 @@ function OwnerManagement({
                       <td>{registration.packageName}</td>
                       <td>{registration.nik}</td>
                       <td>{registration.passportNumber || 'Belum diisi'}</td>
+                      <td>{registration.documents?.length > 0
+                        ? <button type="button" className="document-count-button" onClick={() => onViewDetails(registration)}>Lihat {registration.documents.length} file</button>
+                        : <span className="document-empty">Belum ada</span>}</td>
                       <td><label className={`status-pill ${documents[registration.id] === 'Lengkap' ? 'status-verified' : documents[registration.id] === 'Kurang' ? 'status-revision' : 'status-pending'}`}><select value={documents[registration.id] || 'Perlu diperiksa'} onChange={(event) => onUpdateDocument(registration.id, event.target.value)} aria-label={`Status dokumen ${registration.fullName}`}><option>Perlu diperiksa</option><option>Lengkap</option><option>Kurang</option></select><ChevronDown size={13} /></label></td>
                     </tr>
                   ))}
-                  {filteredRegistrations.length === 0 && <tr><td colSpan="5"><div className="empty-state"><FileText size={20} /><strong>Jamaah tidak ditemukan</strong><span>Coba kata kunci lain.</span></div></td></tr>}
+                  {filteredRegistrations.length === 0 && <tr><td colSpan="6"><div className="empty-state"><FileText size={20} /><strong>Jamaah tidak ditemukan</strong><span>Coba kata kunci lain.</span></div></td></tr>}
                 </tbody>
               </table>
             </div>

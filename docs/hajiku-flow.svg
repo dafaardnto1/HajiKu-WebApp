@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 340" role="img" aria-labelledby="title description">
+  <title id="title">Alur kerja internal HajiKu</title>
+  <desc id="description">Pemilik masuk ke dashboard untuk mengelola jamaah, paket keberangkatan, pembayaran, dan dokumen.</desc>
+  <defs>
+    <style>
+      .bg { fill: #f7f8f6; }
+      .card { fill: #ffffff; stroke: #e2e8e2; stroke-width: 1.5; }
+      .card-main { fill: #28563e; stroke: #28563e; }
+      .label { fill: #26332a; font: 600 15px Inter, ui-sans-serif, system-ui, sans-serif; }
+      .label-main { fill: #ffffff; }
+      .sub { fill: #7a867d; font: 12px Inter, ui-sans-serif, system-ui, sans-serif; }
+      .sub-main { fill: #d7e5d9; }
+      .eyebrow { fill: #758178; font: 700 10px Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: 1.6px; }
+      .line { fill: none; stroke: #8fa995; stroke-width: 2; stroke-dasharray: 6 8; animation: flow 1.2s linear infinite; }
+      .dot { fill: #c3a45d; }
+      @keyframes flow { to { stroke-dashoffset: -28; } }
+      @media (prefers-reduced-motion: reduce) { .line { animation: none; } }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#8fa995" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1000" height="340" rx="14" />
+  <text class="eyebrow" x="36" y="36">ALUR PENGELOLAAN INTERNAL</text>
+
+  <path class="line" d="M220 174 H306" marker-end="url(#arrow)" />
+  <path class="line" d="M500 174 H578" />
+  <path class="line" d="M578 75 V276" />
+  <path class="line" d="M578 75 H650" marker-end="url(#arrow)" />
+  <path class="line" d="M578 142 H650" marker-end="url(#arrow)" />
+  <path class="line" d="M578 209 H650" marker-end="url(#arrow)" />
+  <path class="line" d="M578 276 H650" marker-end="url(#arrow)" />
+
+  <rect class="card" x="42" y="134" width="178" height="80" rx="9" />
+  <circle class="dot" cx="66" cy="158" r="4" />
+  <text class="label" x="82" y="163">Login pemilik</text>
+  <text class="sub" x="62" y="189">Autentikasi internal</text>
+
+  <rect class="card card-main" x="306" y="134" width="194" height="80" rx="9" />
+  <text class="label label-main" x="330" y="164">Dashboard</text>
+  <text class="sub sub-main" x="330" y="190">Ringkasan operasional</text>
+
+  <rect class="card" x="650" y="48" width="306" height="54" rx="8" />
+  <text class="label" x="672" y="71">Jamaah</text>
+  <text class="sub" x="672" y="89">Data, status, dan detail</text>
+
+  <rect class="card" x="650" y="115" width="306" height="54" rx="8" />
+  <text class="label" x="672" y="138">Paket &amp; keberangkatan</text>
+  <text class="sub" x="672" y="156">Jadwal, kuota, dan harga</text>
+
+  <rect class="card" x="650" y="182" width="306" height="54" rx="8" />
+  <text class="label" x="672" y="205">Pembayaran</text>
+  <text class="sub" x="672" y="223">Tagihan dan status pelunasan</text>
+
+  <rect class="card" x="650" y="249" width="306" height="54" rx="8" />
+  <text class="label" x="672" y="272">Dokumen</text>
+  <text class="sub" x="672" y="290">Pemeriksaan kelengkapan data</text>
+</svg>

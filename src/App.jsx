@@ -138,6 +138,7 @@ function App() {
             }))}
             documents={documents}
             onUpdateDocument={(id, status) => setDocuments((current) => ({ ...current, [id]: status }))}
+            onViewDetails={setSelectedRegistration}
           />
         )}
       </main>
